@@ -8,6 +8,20 @@
                 >
                     Dashboard
                 </x-navigation.link>
+                <x-navigation.link
+                    :href="route('categories.index')"
+                    :active="request()->routeIs('categories.*')"
+                >
+                    Категории
+                </x-navigation.link>
+                @if (Route::has('transactions.index'))
+                    <x-navigation.link
+                        :href="route('transactions.index')"
+                        :active="request()->routeIs('transactions.*')"
+                    >
+                        Транзакции
+                    </x-navigation.link>
+                @endif
             </div>
         </div>
         <div class="flex items-center gap-3">

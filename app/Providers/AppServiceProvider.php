@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -29,11 +29,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Password::defaults(function () {
-            if($this->app->isLocal()){
+            if ($this->app->isLocal()) {
                 return Password::min(8);
             }
 
-            return Password::min(8)->mixedCase()->numbers()->symbols()->uncompromised();
+            return Password::min(8)
+                ->mixedCase()
+                ->numbers()
+                ->symbols()
+                ->uncompromised();
         });
 
         RateLimiter::for('verification-email',
@@ -63,10 +67,14 @@ class AppServiceProvider extends ServiceProvider
                 ->withInput($request->only('email', 'remember'));
         };
 
-        RateLimiter::for('login', function (Request $request) use ($loginRateLimitResponse){
-            return[
-                Limit::perMinute(20)->by($request->ip())->response($loginRateLimitResponse),
-                Limit::perMinute(10)->by($request->post('email'))->response($loginRateLimitResponse),
+        RateLimiter::for('login', function (Request $request) use ($loginRateLimitResponse) {
+            return [
+                Limit::perMinute(20)
+                    ->by($request->ip())
+                    ->response($loginRateLimitResponse),
+                Limit::perMinute(10)
+                    ->by($request->post('email'))
+                    ->response($loginRateLimitResponse),
             ];
         });
 

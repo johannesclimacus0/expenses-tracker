@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\AuthenticateUser;
-use App\Http\Requests\LoginRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -17,10 +18,10 @@ class LoginController extends Controller
         $data = $request->safe()->only(['email', 'password']);
         $remember = $request->boolean('remember');
 
-        if (!$auth->handle($data, $remember)) {
+        if (! $auth->handle($data, $remember)) {
             return back()
                 ->withErrors([
-                    'auth' => 'Неверная почта или пароль.',
+                    'auth' => 'Неверная почта или пароль',
                 ])
                 ->onlyInput('email', 'remember');
         }
@@ -30,7 +31,8 @@ class LoginController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    public function destroy(){
+    public function destroy()
+    {
         auth()->logout();
         session()->invalidate();
         session()->regenerateToken();

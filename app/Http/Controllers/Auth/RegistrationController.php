@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\RegisterUser;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,9 @@ class RegistrationController extends Controller
     {
         return view('auth.register');
     }
-    public function store(RegisterRequest $request, RegisterUser $register){
+
+    public function store(RegisterRequest $request, RegisterUser $register)
+    {
         $data = $request->validated();
         $user = $register->handle($data);
 

@@ -35,4 +35,32 @@ document.addEventListener('DOMContentLoaded', () => {
         '[data-throttle-countdown]',
         '[data-throttle-message]',
     );
+
+    const categoryModal = document.querySelector('[data-category-modal]');
+
+    if (categoryModal) {
+        const categoryName = categoryModal.querySelector('[data-category-name]');
+
+        document.querySelectorAll('[data-category-modal-open]').forEach((button) => {
+            button.addEventListener('click', () => {
+                categoryModal.showModal();
+                categoryName?.focus();
+            });
+        });
+
+        categoryModal.querySelectorAll('[data-category-modal-close]').forEach((button) => {
+            button.addEventListener('click', () => categoryModal.close());
+        });
+
+        categoryModal.addEventListener('click', (event) => {
+            if (event.target === categoryModal) {
+                categoryModal.close();
+            }
+        });
+
+        if (categoryModal.dataset.openOnLoad === 'true') {
+            categoryModal.showModal();
+            categoryName?.focus();
+        }
+    }
 });

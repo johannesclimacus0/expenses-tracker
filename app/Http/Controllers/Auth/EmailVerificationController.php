@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 
 class EmailVerificationController extends Controller
 {
-    public function __invoke(EmailVerificationRequest $request) {
+    public function __invoke(EmailVerificationRequest $request)
+    {
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false));
         }

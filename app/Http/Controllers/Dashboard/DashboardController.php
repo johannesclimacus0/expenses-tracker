@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -10,6 +11,6 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        return view('dashboard' , compact('user'));
+        return view('dashboard', compact('user'));
     }
 }

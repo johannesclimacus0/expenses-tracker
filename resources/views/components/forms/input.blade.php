@@ -3,6 +3,7 @@
     'label',
     'type' => 'text',
     'error' => null,
+    'value' => null,
 ])
 
 <div>
@@ -21,7 +22,7 @@
         name="{{$name}}"
         type="{{$type}}"
         @if ($type !== 'password')
-            value="{{ old($name) }}"
+            value="{{ old($name, $value) }}"
         @endif
         {{ $attributes->class([
             'block h-10 w-full rounded-xl border bg-stone-50 px-3.5 text-xs text-slate-900 outline-none transition placeholder:text-slate-400',
