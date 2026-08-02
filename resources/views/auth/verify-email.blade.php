@@ -22,7 +22,7 @@
                     message="Слишком много попыток. Повторная отправка будет доступна через"
                 />
             @elseif (session('status') === 'verification-link-sent')
-                <div role="status" class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs text-emerald-700">
+                <div role="status" class="mb-4 rounded-xl border border-green-200 bg-green-100 px-3.5 py-2.5 text-xs text-green-800">
                     Новая ссылка отправлена. Проверьте входящие сообщения и папку «Спам»
                 </div>
             @endif

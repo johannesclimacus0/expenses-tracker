@@ -3,12 +3,6 @@
         <div class="flex items-center">
             <div class="flex items-center gap-1 rounded-full bg-white p-1 shadow-sm">
                 <x-navigation.link
-                    :href="route('dashboard')"
-                    :active="request()->routeIs('dashboard')"
-                >
-                    Dashboard
-                </x-navigation.link>
-                <x-navigation.link
                     :href="route('categories.index')"
                     :active="request()->routeIs('categories.*')"
                 >
@@ -22,12 +16,25 @@
                         Транзакции
                     </x-navigation.link>
                 @endif
+                @if (Route::has('budgets.index'))
+                    <x-navigation.link
+                        :href="route('budgets.index')"
+                        :active="request()->routeIs('budgets.*')"
+                    >
+                        Бюджеты
+                    </x-navigation.link>
+                @endif
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <span class="hidden text-xs text-slate-500 sm:inline">
-                {{ auth()->user()->name }}
-            </span>
+            <a href="{{ route('dashboard') }}" @class([
+                'rounded-full px-3 py-2 text-xs transition',
+                'bg-slate-900 text-white' => request()->routeIs('dashboard'),
+                'text-slate-500 hover:bg-white hover:text-slate-900' => ! request()->routeIs('dashboard'),
+            ])>
+                <span class="sm:hidden">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                <span class="hidden sm:inline">{{ auth()->user()->name }}</span>
+            </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 @method('DELETE')

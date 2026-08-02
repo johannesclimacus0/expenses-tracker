@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\DTOs\Dashboard\DashboardFilterData;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Dashboard\FilterDashboardRequest;
+use App\Services\Dashboard\DashboardService;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(FilterDashboardRequest $request, DashboardService $dashboardService): View
     {
-        $user = $request->user();
+        $filter = DashboardFilterData::fromArray(
+            $request->validated(),
+            $request->user()->settings->dashboard_period,
+        );
+        $dashboard = $dashboardService->build($request->user(), $filter);
 
-        return view('dashboard', compact('user'));
+        return view('dashboard', compact('dashboard'));
     }
 }

@@ -11,7 +11,7 @@
         @csrf
         <input type="hidden" name="token" value="{{ old('token', $token ?? request()->route('token')) }}">
         <div>
-            <label for="email" class="mb-1.5 block text-xs font-medium text-slate-600">Email</label>
+            <label for="email" class="mb-1.5 block text-xs font-medium text-slate-600">Email<span class="text-red-500"> *</span></label>
             <input
                 id="email"
                 name="email"

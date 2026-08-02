@@ -16,7 +16,6 @@
 
         <form method="POST" action="{{ route('categories.store') }}" class="space-y-4">
             @csrf
-
             <x-forms.input
                 name="name"
                 label="Название"

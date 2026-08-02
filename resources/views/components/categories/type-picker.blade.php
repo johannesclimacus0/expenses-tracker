@@ -7,7 +7,7 @@
 @endphp
 
 <fieldset>
-    <legend class="mb-1.5 text-xs font-medium text-slate-600">Тип</legend>
+    <legend class="mb-1.5 text-xs font-medium text-slate-600">Тип<span class="text-red-500"> *</span></legend>
     <div class="grid grid-cols-2 gap-2">
         <label class="cursor-pointer">
             <input type="radio" name="type" value="expense" class="peer sr-only" required@checked($selectedType === 'expense')>

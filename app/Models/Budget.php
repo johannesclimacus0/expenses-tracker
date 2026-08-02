@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Traits\HasUuidRouteKey;
 use Carbon\CarbonImmutable;
+use Database\Factories\BudgetFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -35,11 +37,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['category_id', 'amount', 'month'])]
 class Budget extends Model
 {
-    use HasUuidRouteKey;
+    /** @use HasFactory<BudgetFactory> */
+    use HasFactory, HasUuidRouteKey;
 
     protected $casts = [
         'amount' => 'decimal:2',
-        'month' => 'date',
+        'month' => 'immutable_date',
     ];
 
     public function user(): BelongsTo

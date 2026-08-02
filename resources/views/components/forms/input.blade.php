@@ -9,7 +9,7 @@
 <div>
     <div class="mb-1.5 flex items-center justify-between gap-4">
         <label for="{{$name}}" class="block text-xs font-medium text-slate-600">
-            {{$label}}
+            {{$label}}@if ($attributes->has('required'))<span class="text-red-500"> *</span>@endif
         </label>
 
         @isset($action)

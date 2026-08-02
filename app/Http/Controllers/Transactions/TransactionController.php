@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Transactions;
 
 use App\Actions\Transactions\CreateTransaction;
 use App\Actions\Transactions\DeleteTransaction;
+use App\Actions\Transactions\ExportTransactionsCsv;
+use App\Actions\Transactions\ImportTransactionsCsv;
 use App\Actions\Transactions\ListTransactions;
 use App\Actions\Transactions\UpdateTransaction;
 use App\DTOs\Transactions\TransactionData;
@@ -11,13 +13,17 @@ use App\DTOs\Transactions\TransactionFiltersData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transactions\DeleteTransactionRequest;
 use App\Http\Requests\Transactions\FilterTransactionsRequest;
+use App\Http\Requests\Transactions\ImportTransactionsCsvRequest;
 use App\Http\Requests\Transactions\StoreTransactionRequest;
 use App\Http\Requests\Transactions\UpdateTransactionRequest;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
@@ -78,5 +84,43 @@ class TransactionController extends Controller
         $deleteTransaction->handle($transaction);
 
         return to_route('transactions.index')->with('status', 'Транзакция удалена');
+    }
+
+    public function importCsv(ImportTransactionsCsvRequest $request, ImportTransactionsCsv $importTransactions): RedirectResponse
+    {
+        $file = $request->file('csv');
+
+        if (! $file instanceof UploadedFile) {
+            return back()->withErrors(['csv' => 'Выберите CSV-файл.']);
+        }
+
+        $count = $importTransactions->handle($request->user(), $file);
+
+        return to_route('transactions.index')
+            ->with('status', "Импортировано транзакций: {$count}");
+    }
+
+    public function exportCsv(Request $request, ExportTransactionsCsv $exportTransactions): StreamedResponse
+    {
+        Gate::authorize('viewAny', Transaction::class);
+        $user = $request->user();
+
+        return response()->streamDownload(
+            function () use ($exportTransactions, $user): void {
+                $stream = fopen('php://output', 'wb');
+
+                if ($stream === false) {
+                    throw new RuntimeException('Ошибка при записи.');
+                }
+
+                try {
+                    $exportTransactions->handle($user, $stream);
+                } finally {
+                    fclose($stream);
+                }
+            },
+            'transactions-'.now()->format('Y-m-d').'.csv',
+            ['Content-Type' => 'text/csv; charset=UTF-16LE'],
+        );
     }
 }

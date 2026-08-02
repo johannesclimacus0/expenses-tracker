@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Currency;
+use App\Enums\DashboardPeriod;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -81,5 +84,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
+    }
+
+    /**
+     * @return HasOne<UserSetting, $this>
+     */
+    public function settings(): HasOne
+    {
+        return $this->hasOne(UserSetting::class)->withDefault([
+            'currency' => Currency::Rub->value,
+            'dashboard_period' => DashboardPeriod::Month->value,
+            'transactions_per_page' => 10,
+            'budget_warning_percent' => 80,
+            'show_cents' => true,
+        ]);
     }
 }

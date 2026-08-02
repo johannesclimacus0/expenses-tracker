@@ -28,7 +28,7 @@
         'text-rose-600' => $transaction->type->value === 'expense',
         'text-emerald-600' => $transaction->type->value === 'income',
     ])>
-        {{ $transaction->type->value === 'expense' ? '−' : '+' }}{{ number_format((float) $transaction->amount, 2, ',', ' ') }}
+        <x-money :amount="$transaction->amount" :sign="$transaction->type->value === 'expense' ? '−' : '+'" />
     </p>
 
     <div class="hidden shrink-0 items-center gap-3 sm:flex">

@@ -32,7 +32,7 @@ final class ListTransactions
 
         return $query
             ->orderByDesc('occurred_at')
-            ->paginate(10)
+            ->paginate($user->settings->transactions_per_page)
             ->withQueryString();
     }
 }
