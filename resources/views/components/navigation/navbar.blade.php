@@ -24,6 +24,14 @@
                         Бюджеты
                     </x-navigation.link>
                 @endif
+                @if (Route::has('goals.index'))
+                    <x-navigation.link
+                        :href="route('goals.index')"
+                        :active="request()->routeIs('goals.*')"
+                    >
+                        Цели
+                    </x-navigation.link>
+                @endif
             </div>
         </div>
         <div class="flex items-center gap-3">

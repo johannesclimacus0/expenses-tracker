@@ -46,7 +46,7 @@ class UpdateCategoryRequest extends FormRequest
             function (Validator $validator): void {
                 $category = $this->route('category');
 
-                if (! $category instanceof Category
+                if (!$category instanceof Category
                     || $validator->errors()->has('type')
                     || $this->input('type') === $category->type->value) {
                     return;

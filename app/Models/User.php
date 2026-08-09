@@ -31,8 +31,14 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $budgets_count
  * @property-read Collection<int, Category> $categories
  * @property-read int|null $categories_count
+ * @property-read Collection<int, Goal> $goals
+ * @property-read int|null $goals_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Collection<int, RecurringTransaction> $recurringTransactions
+ * @property-read int|null $recurring_transactions_count
+ * @property-read UserSetting $settings
+ * @property-read TelegramChat|null $telegramChat
  * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
  *
@@ -98,5 +104,20 @@ class User extends Authenticatable implements MustVerifyEmail
             'budget_warning_percent' => 80,
             'show_cents' => true,
         ]);
+    }
+
+    public function recurringTransactions(): HasMany
+    {
+        return $this->hasMany(RecurringTransaction::class);
+    }
+
+    public function goals(): HasMany
+    {
+        return $this->hasMany(Goal::class);
+    }
+
+    public function telegramChat(): HasOne
+    {
+        return $this->hasOne(TelegramChat::class);
     }
 }

@@ -227,7 +227,7 @@ class BudgetCrudTest extends TestCase
             ->forMonth($user, now()->setDate(2026, 8, 1)->startOfMonth());
 
         $overall = $usage->first(fn ($item) => $item->budget->isOverall());
-        $categoryUsage = $usage->first(fn ($item) => ! $item->budget->isOverall());
+        $categoryUsage = $usage->first(fn ($item) => !$item->budget->isOverall());
 
         $this->assertSame('175.50', $overall->spent);
         $this->assertSame('324.50', $overall->remaining);

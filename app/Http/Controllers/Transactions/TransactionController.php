@@ -90,7 +90,7 @@ class TransactionController extends Controller
     {
         $file = $request->file('csv');
 
-        if (! $file instanceof UploadedFile) {
+        if (!$file instanceof UploadedFile) {
             return back()->withErrors(['csv' => 'Выберите CSV-файл.']);
         }
 
@@ -119,7 +119,7 @@ class TransactionController extends Controller
                     fclose($stream);
                 }
             },
-            'transactions-'.now()->format('Y-m-d').'.csv',
+            'transactions-' . now()->format('Y-m-d') . '.csv',
             ['Content-Type' => 'text/csv; charset=UTF-16LE'],
         );
     }

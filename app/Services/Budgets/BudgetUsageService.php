@@ -58,7 +58,7 @@ final class BudgetUsageService
                 spent: $this->fromCents($spentCents),
                 remaining: $this->fromCents($remainingCents),
                 percentage: $percentage,
-                warning: ! $exceeded && $percentage >= $warningPercent,
+                warning: !$exceeded && $percentage >= $warningPercent,
                 exceeded: $exceeded,
             );
         });
@@ -80,7 +80,7 @@ final class BudgetUsageService
         $sign = $cents < 0 ? '-' : '';
         $absolute = abs($cents);
 
-        return $sign.intdiv($absolute, 100).'.'.str_pad(
+        return $sign . intdiv($absolute, 100) . '.' . str_pad(
             (string) ($absolute % 100),
             2,
             '0',

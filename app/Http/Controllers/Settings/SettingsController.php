@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdatePasswordRequest;
 use App\Http\Requests\Settings\UpdateProfileRequest;
 use App\Http\Requests\Settings\UpdateSettingsRequest;
+use App\Services\Telegram\TelegramLinkService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,7 +27,22 @@ class SettingsController extends Controller
             'settings' => $request->user()->settings,
             'currencies' => Currency::cases(),
             'dashboardPeriods' => DashboardPeriod::cases(),
+            'telegramChat' => $request->user()->telegramChat,
         ]);
+    }
+
+    public function createTelegramToken(Request $request, TelegramLinkService $telegramLinks): RedirectResponse
+    {
+        return back()
+            ->with('status', 'telegram-token-created')
+            ->with('telegram_link_token', $telegramLinks->issue($request->user()));
+    }
+
+    public function destroyTelegram(Request $request, TelegramLinkService $telegramLinks): RedirectResponse
+    {
+        $telegramLinks->disconnect($request->user());
+
+        return back()->with('status', 'telegram-disconnected');
     }
 
     public function update(UpdateSettingsRequest $request, UpdateSettings $updateSettings): RedirectResponse

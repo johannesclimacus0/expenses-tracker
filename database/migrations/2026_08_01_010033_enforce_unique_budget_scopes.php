@@ -9,13 +9,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (! Schema::hasIndex('budgets', 'budgets_user_id_index')) {
+        if (!Schema::hasIndex('budgets', 'budgets_user_id_index')) {
             Schema::table('budgets', function (Blueprint $table) {
                 $table->index('user_id');
             });
         }
 
-        if (! Schema::hasIndex('budgets', 'budgets_category_id_index')) {
+        if (!Schema::hasIndex('budgets', 'budgets_category_id_index')) {
             Schema::table('budgets', function (Blueprint $table) {
                 $table->index('category_id');
             });
@@ -27,7 +27,7 @@ return new class extends Migration
             });
         }
 
-        if (! Schema::hasIndex('budgets', 'budgets_user_category_scope_month_unique')) {
+        if (!Schema::hasIndex('budgets', 'budgets_user_category_scope_month_unique')) {
             DB::statement(<<<'SQL'
                 CREATE UNIQUE INDEX budgets_user_category_scope_month_unique
                 ON budgets (user_id, (COALESCE(category_id, 0)), month)

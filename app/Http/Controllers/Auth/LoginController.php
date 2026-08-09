@@ -18,7 +18,7 @@ class LoginController extends Controller
         $data = $request->safe()->only(['email', 'password']);
         $remember = $request->boolean('remember');
 
-        if (! $auth->handle($data, $remember)) {
+        if (!$auth->handle($data, $remember)) {
             return back()
                 ->withErrors([
                     'auth' => 'Неверная почта или пароль',

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property int $user_id
  * @property int|null $category_id
  * @property numeric $amount
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Category|null $category
  * @property-read User $user
  *
+ * @method static \Database\Factories\BudgetFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget query()
@@ -31,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereMonth($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereUuid($value)
  *
  * @mixin \Eloquent
  */

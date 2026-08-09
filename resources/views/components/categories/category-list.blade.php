@@ -41,27 +41,5 @@
         @endforelse
     </div>
 
-    @if ($categories->hasPages())
-        <nav class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-            @if ($categories->onFirstPage())
-                <span class="text-xs text-slate-300">Назад</span>
-            @else
-                <a href="{{ $categories->previousPageUrl() }}" rel="prev"
-                    class="text-xs font-medium text-slate-500 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
-                >
-                Назад
-                </a>
-            @endif
-
-            @if ($categories->hasMorePages())
-                <a href="{{ $categories->nextPageUrl() }}" rel="next"
-                    class="text-xs font-medium text-slate-500 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
-                >
-                Далее
-                </a>
-            @else
-                <span class="text-xs text-slate-300">Далее</span>
-            @endif
-        </nav>
-    @endif
+    <x-pagination.simple :paginator="$categories" compact />
 </section>

@@ -3,26 +3,20 @@
 ])
 
 <form method="GET" action="{{ route('transactions.index') }}" class="grid grid-cols-2 gap-x-4 gap-y-4 border-y border-slate-200 py-4 sm:grid-cols-4 lg:sticky lg:top-6 lg:grid-cols-1 lg:border-y-0 lg:border-r lg:py-1 lg:pr-5">
-    <div>
-        <label for="type" class="mb-1 block text-xs text-slate-400">Тип</label>
-        <select id="type" name="type" class="block h-8 w-full border-0 border-b border-slate-200 bg-transparent px-0 text-xs text-slate-700 outline-none transition hover:border-slate-400 focus:border-slate-500 focus:bg-white focus:ring-0">
+    <x-forms.select name="type" label="Тип" variant="filter">
             <option value="">Все</option>
             <option value="expense" @selected(request('type') === 'expense')>Расходы</option>
             <option value="income" @selected(request('type') === 'income')>Доходы</option>
-        </select>
-    </div>
+    </x-forms.select>
 
-    <div>
-        <label for="category" class="mb-1 block text-xs text-slate-400">Категория</label>
-        <select id="category" name="category" class="block h-8 w-full border-0 border-b border-slate-200 bg-transparent px-0 text-xs text-slate-700 outline-none transition hover:border-slate-400 focus:border-slate-500 focus:bg-white focus:ring-0">
+    <x-forms.select name="category" label="Категория" variant="filter">
             <option value="">Все</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->uuid }}" @selected(request('category') === $category->uuid)>
                     {{ $category->name }}
                 </option>
             @endforeach
-        </select>
-    </div>
+    </x-forms.select>
 
     <div>
         <label for="from" class="mb-1 block text-xs text-slate-400">С даты</label>

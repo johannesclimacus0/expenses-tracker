@@ -4,10 +4,39 @@ namespace App\Models;
 
 use App\Enums\Currency;
 use App\Enums\DashboardPeriod;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-#[Fillable(['currency', 'dashboard_period', 'transactions_per_page', 'budget_warning_percent', 'show_cents',])]
+
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property Currency $currency
+ * @property DashboardPeriod $dashboard_period
+ * @property int $transactions_per_page
+ * @property int $budget_warning_percent
+ * @property bool $show_cents
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereBudgetWarningPercent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereDashboardPeriod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereShowCents($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereTransactionsPerPage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
+#[Fillable(['currency', 'dashboard_period', 'transactions_per_page', 'budget_warning_percent', 'show_cents'])]
 class UserSetting extends Model
 {
     protected function casts(): array

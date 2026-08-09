@@ -43,7 +43,7 @@ class TransactionCsvTest extends TestCase
         $response = $this->actingAs($user)
             ->get(route('transactions.export'))
             ->assertOk()
-            ->assertDownload('transactions-'.now()->format('Y-m-d').'.csv');
+            ->assertDownload('transactions-' . now()->format('Y-m-d') . '.csv');
 
         $csv = $response->streamedContent();
         $decodedCsv = mb_convert_encoding(substr($csv, 2), 'UTF-8', 'UTF-16LE');
@@ -123,7 +123,7 @@ class TransactionCsvTest extends TestCase
         ]);
         $file = UploadedFile::fake()->createWithContent(
             'transactions.csv',
-            "\xFF\xFE".mb_convert_encoding($csv, 'UTF-16LE', 'UTF-8'),
+            "\xFF\xFE" . mb_convert_encoding($csv, 'UTF-16LE', 'UTF-8'),
         );
 
         $this->actingAs($user)

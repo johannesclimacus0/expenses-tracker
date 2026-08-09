@@ -20,7 +20,7 @@ final readonly class DashboardFilterData
             ? DashboardPeriod::from($data['period'])
             : $defaultPeriod;
         $month = isset($data['month'])
-            ? CarbonImmutable::parse($data['month'].'-01')->startOfMonth()
+            ? CarbonImmutable::parse($data['month'] . '-01')->startOfMonth()
             : now()->startOfMonth();
 
         $start = match ($period) {

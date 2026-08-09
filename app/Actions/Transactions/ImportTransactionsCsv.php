@@ -43,7 +43,7 @@ final class ImportTransactionsCsv
             ]);
 
             if ($validator->fails()) {
-                $errors[] = "Строка {$row['line']}: ".$validator->errors()->first();
+                $errors[] = "Строка {$row['line']}: " . $validator->errors()->first();
 
                 continue;
             }
@@ -98,6 +98,6 @@ final class ImportTransactionsCsv
 
     private function categoryKey(TransactionType $type, string $name): string
     {
-        return $type->value.'|'.mb_strtolower(trim($name));
+        return $type->value . '|' . mb_strtolower(trim($name));
     }
 }

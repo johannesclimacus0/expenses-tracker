@@ -3,6 +3,9 @@
         <header class="mb-5 flex items-center gap-4">
             <h1 class="text-lg font-semibold tracking-tight text-slate-900">Транзакции</h1>
             <span class="h-px flex-1 bg-slate-200"></span>
+            <a href="{{ route('recurring-transactions.index') }}" class="text-xs font-medium text-slate-400 transition hover:text-slate-900">
+                Регулярные
+            </a>
             <details class="relative">
                 <summary class="cursor-pointer list-none rounded-full bg-white px-3.5 py-2 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-900 hover:text-white hover:ring-slate-900">
                     CSV
@@ -45,7 +48,7 @@
                     </div>
                 @endforelse
 
-                <x-transactions.pagination :paginator="$transactions" />
+                <x-pagination.simple :paginator="$transactions" />
             </section>
         </div>
     </div>

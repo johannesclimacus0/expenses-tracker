@@ -12,14 +12,7 @@
         <input type="hidden" name="token" value="{{ old('token', $token ?? request()->route('token')) }}">
         <div>
             <label for="email" class="mb-1.5 block text-xs font-medium text-slate-600">Email<span class="text-red-500"> *</span></label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                value="{{ old('email', $email ?? request()->query('email')) }}"
-                autocomplete="email"
-                required
-                autofocus
+            <input id="email" name="email" type="email" value="{{ old('email', $email ?? request()->query('email')) }}" autocomplete="email" required autofocus
                 @class([
                     'block h-10 w-full rounded-xl border bg-stone-50 px-3.5 text-xs text-slate-900 outline-none transition placeholder:text-slate-400',
                     'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-100' => $errors->has('email'),

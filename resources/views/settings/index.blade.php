@@ -13,6 +13,7 @@
                 :currencies="$currencies"
                 :dashboard-periods="$dashboardPeriods"
             />
+            <x-settings.telegram-form :chat="$telegramChat" />
             <x-settings.password-form />
         </div>
     </div>

@@ -24,10 +24,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property CarbonImmutable|null $updated_at
  * @property-read Collection<int, Budget> $budgets
  * @property-read int|null $budgets_count
+ * @property-read Collection<int, RecurringTransaction> $recurringTransactions
+ * @property-read int|null $recurring_transactions_count
  * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
  * @property-read User $user
  *
+ * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
@@ -37,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUuid($value)
  *
  * @mixin Eloquent
  */
@@ -63,5 +67,10 @@ class Category extends Model
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
+    }
+
+    public function recurringTransactions(): HasMany
+    {
+        return $this->hasMany(RecurringTransaction::class);
     }
 }

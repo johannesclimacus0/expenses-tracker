@@ -41,23 +41,14 @@
         required
     />
 
-    <div>
-        <label for="category_id" class="mb-1.5 block text-xs font-medium text-slate-600">
-            Категория
-        </label>
-        <select id="category_id" name="category_id" class="block h-10 w-full rounded-xl border border-transparent bg-stone-50 px-3.5 text-xs text-slate-900 outline-none transition hover:border-slate-300 focus:border-slate-500 focus:bg-white">
+    <x-forms.select name="category_id" label="Категория">
             <option value="">Общий бюджет</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}" @selected((string) $selectedCategory === (string) $category->id)>
                     {{ $category->name }}
                 </option>
             @endforeach
-        </select>
-
-        @error('category_id')
-            <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-        @enderror
-    </div>
+    </x-forms.select>
 
     <div class="flex gap-2 pt-1">
         <a href="{{ route('budgets.index', ['month' => $selectedMonth]) }}" class="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-stone-100 px-4 text-xs font-medium text-slate-600 transition hover:bg-stone-200 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500">

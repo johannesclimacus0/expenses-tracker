@@ -48,7 +48,7 @@ final class TransactionCsvService
 
         if ($headers !== self::HEADERS) {
             fclose($handle);
-            $this->fail('Ожидаются колонки: '.implode(', ', self::HEADERS));
+            $this->fail('Ожидаются колонки: ' . implode(', ', self::HEADERS));
         }
 
         $rows = [];

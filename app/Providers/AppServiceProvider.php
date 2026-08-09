@@ -97,15 +97,15 @@ class AppServiceProvider extends ServiceProvider
 
             return [
                 Limit::perMinute(10)
-                    ->by('ip:'.$request->ip())
+                    ->by('ip:' . $request->ip())
                     ->response($passwordResetRateLimitResponse),
                 Limit::perMinute(1)
-                    ->by('email:'.$email)
+                    ->by('email:' . $email)
                     ->response($passwordResetRateLimitResponse),
             ];
         });
 
-        Model::shouldBeStrict(! $this->app->isProduction());
+        Model::shouldBeStrict(!$this->app->isProduction());
 
         Date::use(CarbonImmutable::class);
 
