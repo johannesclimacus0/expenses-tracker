@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\RecurringTransactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Actions\RecurringTransactions\CreateRecurringTransaction;
 use App\Actions\RecurringTransactions\DeleteRecurringTransaction;
 use App\Actions\RecurringTransactions\UpdateRecurringTransaction;
@@ -20,12 +21,15 @@ use Illuminate\View\View;
 
 class RecurringTransactionController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('viewAny', RecurringTransaction::class);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $recurringTransactions = $request->user()
             ->recurringTransactions()
+            ->where('account_id', $account->id)
             ->with('category')
             ->orderByDesc('is_active')
             ->orderBy('next_run_at')
@@ -35,11 +39,14 @@ class RecurringTransactionController extends Controller
         return view('recurring-transactions.index', compact('recurringTransactions'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('create', RecurringTransaction::class);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $categories = $request->user()->categories()
+            ->where('account_id', $account->id)
             ->orderBy('name')
             ->get();
 
@@ -58,11 +65,17 @@ class RecurringTransactionController extends Controller
             ->with('status', 'Регулярная транзакция добавлена');
     }
 
-    public function edit(Request $request, RecurringTransaction $recurringTransaction): View
-    {
+    public function edit(
+        Request $request,
+        RecurringTransaction $recurringTransaction,
+        ResolveCurrentAccount $resolveCurrentAccount,
+    ): View {
         Gate::authorize('update', $recurringTransaction);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $categories = $request->user()->categories()
+            ->where('account_id', $account->id)
             ->orderBy('name')
             ->get();
 

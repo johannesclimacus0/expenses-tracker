@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $uuid
  * @property int $user_id
+ * @property int|null $account_id
  * @property int|null $category_id
  * @property TransactionType $type
  * @property numeric $amount
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property int|null $recurring_transaction_id
  * @property CarbonImmutable|null $scheduled_for
+ * @property-read Account|null $account
  * @property-read Category|null $category
  * @property-read RecurringTransaction|null $recurringTransaction
  * @property-read User $user
@@ -32,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction whereCreatedAt($value)
@@ -47,7 +50,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @mixin \Eloquent
  */
-#[Fillable(['category_id', 'type', 'amount', 'description', 'occurred_at', 'scheduled_for'])]
+#[Fillable(['account_id', 'category_id', 'type', 'amount', 'description', 'occurred_at', 'scheduled_for'])]
 class Transaction extends Model
 {
     /** @use HasFactory<TransactionFactory> */
@@ -73,5 +76,10 @@ class Transaction extends Model
     public function recurringTransaction(): BelongsTo
     {
         return $this->belongsTo(RecurringTransaction::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 }

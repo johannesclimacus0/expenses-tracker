@@ -2,15 +2,21 @@
 
 namespace App\Actions\Transactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\DTOs\Transactions\TransactionFiltersData;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-final class ListTransactions
+final readonly class ListTransactions
 {
+    public function __construct(private ResolveCurrentAccount $resolveCurrentAccount) {}
+
     public function handle(User $user, TransactionFiltersData $filters): LengthAwarePaginator
     {
-        $query = $user->transactions()->with('category');
+        $account = $this->resolveCurrentAccount->handle($user);
+        $query = $user->transactions()
+            ->where('account_id', $account->id)
+            ->with('category');
         if ($filters->type !== null) {
             $query->where('type', $filters->type->value);
         }

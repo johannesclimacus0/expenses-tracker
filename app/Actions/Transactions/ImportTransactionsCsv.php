@@ -2,6 +2,7 @@
 
 namespace App\Actions\Transactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\DTOs\Transactions\TransactionCsvRowData;
 use App\Enums\TransactionType;
 use App\Models\User;
@@ -13,9 +14,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-final class ImportTransactionsCsv
+final readonly class ImportTransactionsCsv
 {
-    public function __construct(private TransactionCsvService $csv) {}
+    public function __construct(
+        private TransactionCsvService $csv,
+        private ResolveCurrentAccount $accounts,
+    ) {}
 
     public function handle(User $user, UploadedFile $file): int
     {
@@ -72,9 +76,12 @@ final class ImportTransactionsCsv
             throw ValidationException::withMessages(['csv' => $errors]);
         }
 
-        return DB::transaction(function () use ($user, $transactions): int {
+        $account = $this->accounts->handle($user);
+
+        return DB::transaction(function () use ($user, $transactions, $account): int {
             foreach ($transactions as $transaction) {
                 $user->transactions()->create([
+                    'account_id' => $account->getKey(),
                     'type' => $transaction->type,
                     'amount' => $transaction->amount,
                     'category_id' => $transaction->categoryId,

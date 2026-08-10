@@ -36,31 +36,46 @@ document.addEventListener('DOMContentLoaded', () => {
         '[data-throttle-message]',
     );
 
-    const categoryModal = document.querySelector('[data-category-modal]');
+    const setupModal = (modalSelector, openSelector, closeSelector, focusSelector) => {
+        const modal = document.querySelector(modalSelector);
 
-    if (categoryModal) {
-        const categoryName = categoryModal.querySelector('[data-category-name]');
+        if (!modal) {
+            return;
+        }
 
-        document.querySelectorAll('[data-category-modal-open]').forEach((button) => {
+        const focusTarget = modal.querySelector(focusSelector);
+
+        document.querySelectorAll(openSelector).forEach((button) => {
             button.addEventListener('click', () => {
-                categoryModal.showModal();
-                categoryName?.focus();
+                modal.showModal();
+                focusTarget?.focus();
             });
         });
 
-        categoryModal.querySelectorAll('[data-category-modal-close]').forEach((button) => {
-            button.addEventListener('click', () => categoryModal.close());
+        modal.querySelectorAll(closeSelector).forEach((button) => {
+            button.addEventListener('click', () => modal.close());
         });
 
-        categoryModal.addEventListener('click', (event) => {
-            if (event.target === categoryModal) {
-                categoryModal.close();
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.close();
             }
         });
 
-        if (categoryModal.dataset.openOnLoad === 'true') {
-            categoryModal.showModal();
-            categoryName?.focus();
+        if (modal.dataset.openOnLoad === 'true') {
+            modal.showModal();
+            focusTarget?.focus();
         }
-    }
+    };
+
+    setupModal('[data-category-modal]', '[data-category-modal-open]', '[data-category-modal-close]', '[data-category-name]');
+    setupModal('[data-account-modal]', '[data-account-modal-open]', '[data-account-modal-close]', '[data-account-name]');
 });
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allow your team to quickly build robust real-time web applications.
+ */
+
+import './echo';

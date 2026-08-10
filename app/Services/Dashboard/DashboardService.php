@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\DTOs\Dashboard\DashboardData;
 use App\DTOs\Dashboard\DashboardFilterData;
 use App\Enums\TransactionType;
@@ -10,11 +11,15 @@ use App\Services\Budgets\BudgetUsageService;
 
 final class DashboardService
 {
-    public function __construct(private BudgetUsageService $budgetUsageService) {}
+    public function __construct(
+        private BudgetUsageService $budgetUsageService,
+        private ResolveCurrentAccount $resolveCurrentAccount,
+    ) {}
 
     public function build(User $user, DashboardFilterData $filter): DashboardData
     {
-        $transactions = $user->transactions();
+        $account = $this->resolveCurrentAccount->handle($user);
+        $transactions = $user->transactions()->where('account_id', $account->id);
 
         if ($filter->start === null) {
             $transactions->where('occurred_at', '<=', $filter->end);
@@ -33,6 +38,7 @@ final class DashboardService
         $balance = bcsub((string) $income, (string) $expense, 2);
 
         $latestTransactions = $user->transactions()
+            ->where('account_id', $account->id)
             ->with('category')
             ->orderByDesc('occurred_at')
             ->limit(5)

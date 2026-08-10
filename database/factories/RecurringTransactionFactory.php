@@ -6,6 +6,7 @@ use App\Enums\RecurringPeriod;
 use App\Enums\TransactionType;
 use App\Models\RecurringTransaction;
 use App\Models\User;
+use Database\Factories\Concerns\CreatesAccountMembership;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class RecurringTransactionFactory extends Factory
 {
+    use CreatesAccountMembership;
+
     /**
      * Define the model's default state.
      *
@@ -24,6 +27,7 @@ class RecurringTransactionFactory extends Factory
 
         return [
             'user_id' => User::factory(),
+            'account_id' => fn (array $attributes) => $this->defaultAccountId($attributes),
             'category_id' => null,
             'type' => fake()->randomElement(TransactionType::cases()),
             'amount' => $this->faker->randomFloat(2, 10),
@@ -34,6 +38,13 @@ class RecurringTransactionFactory extends Factory
             'last_run_at' => null,
             'is_active' => true,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (RecurringTransaction $recurringTransaction): void {
+            $this->createAccountMembership($recurringTransaction->user_id, $recurringTransaction->account_id);
+        });
     }
 
     public function expense(): static

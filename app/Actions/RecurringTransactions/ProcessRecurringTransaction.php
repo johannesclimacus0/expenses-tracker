@@ -32,6 +32,7 @@ final readonly class ProcessRecurringTransaction
             $scheduledFor = $lockedRecurringTransaction->next_run_at;
 
             $transaction = $lockedRecurringTransaction->transactions()->make([
+                'account_id' => $lockedRecurringTransaction->account_id,
                 'type' => $lockedRecurringTransaction->type,
                 'amount' => $lockedRecurringTransaction->amount,
                 'category_id' => $lockedRecurringTransaction->category_id,

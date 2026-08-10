@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Categories;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Actions\Categories\CreateCategory;
 use App\Actions\Categories\DeleteCategory;
 use App\Actions\Categories\UpdateCategory;
@@ -19,12 +20,15 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('viewAny', Category::class);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $expenseCategories = $request->user()
             ->categories()
+            ->where('account_id', $account->id)
             ->where('type', TransactionType::Expense->value)
             ->orderBy('name')
             ->simplePaginate(perPage: 10, pageName: 'expenses_page')
@@ -32,6 +36,7 @@ class CategoryController extends Controller
 
         $incomeCategories = $request->user()
             ->categories()
+            ->where('account_id', $account->id)
             ->where('type', TransactionType::Income->value)
             ->orderBy('name')
             ->simplePaginate(perPage: 10, pageName: 'income_page')

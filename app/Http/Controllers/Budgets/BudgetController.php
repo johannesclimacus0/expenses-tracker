@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Budgets;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Actions\Budgets\CreateBudget;
 use App\Actions\Budgets\DeleteBudget;
 use App\Actions\Budgets\UpdateBudget;
@@ -33,12 +34,12 @@ class BudgetController extends Controller
         ]);
     }
 
-    public function create(Request $request): View
+    public function create(Request $request, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('create', Budget::class);
 
         return view('budgets.create', [
-            'categories' => $this->expenseCategories($request),
+            'categories' => $this->expenseCategories($request, $resolveCurrentAccount),
         ]);
     }
 
@@ -52,13 +53,13 @@ class BudgetController extends Controller
         ])->with('status', 'Бюджет добавлен');
     }
 
-    public function edit(Request $request, Budget $budget): View
+    public function edit(Request $request, Budget $budget, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('update', $budget);
 
         return view('budgets.edit', [
             'budget' => $budget,
-            'categories' => $this->expenseCategories($request),
+            'categories' => $this->expenseCategories($request, $resolveCurrentAccount),
         ]);
     }
 
@@ -82,9 +83,12 @@ class BudgetController extends Controller
         ])->with('status', 'Бюджет удалён');
     }
 
-    private function expenseCategories(Request $request)
+    private function expenseCategories(Request $request, ResolveCurrentAccount $resolveCurrentAccount)
     {
+        $account = $resolveCurrentAccount->handle($request->user());
+
         return $request->user()->categories()
+            ->where('account_id', $account->id)
             ->where('type', TransactionType::Expense->value)
             ->orderBy('name')
             ->get();

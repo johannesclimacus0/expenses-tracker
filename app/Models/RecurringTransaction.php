@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $uuid
  * @property int $user_id
+ * @property int|null $account_id
  * @property int|null $category_id
  * @property TransactionType $type
  * @property numeric $amount
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $is_active
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read Account|null $account
  * @property-read Category|null $category
  * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
@@ -38,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RecurringTransaction whereCreatedAt($value)
@@ -55,7 +58,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @mixin \Eloquent
  */
-#[Fillable(['category_id', 'type', 'amount', 'description', 'period', 'starts_at', 'next_run_at', 'last_run_at', 'is_active'])]
+#[Fillable(['account_id', 'category_id', 'type', 'amount', 'description', 'period', 'starts_at', 'next_run_at', 'last_run_at', 'is_active'])]
 class RecurringTransaction extends Model
 {
     /** @use HasFactory<RecurringTransactionFactory> */
@@ -84,5 +87,10 @@ class RecurringTransaction extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 }

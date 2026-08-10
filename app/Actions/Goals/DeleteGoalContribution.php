@@ -13,10 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 final readonly class DeleteGoalContribution
 {
-    public function __construct(
-        private GoalProgressService $progressService,
-        private SyncGoalStatus $syncStatus,
-    ) {}
+    public function __construct(private GoalProgressService $progressService) {}
 
     public function handle(Goal $goal, GoalContribution $contribution): void
     {
@@ -39,7 +36,6 @@ final readonly class DeleteGoalContribution
             }
 
             $lockedContribution->delete();
-            $this->syncStatus->handle($lockedGoal);
         });
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Goals;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Actions\Goals\CreateGoal;
 use App\Actions\Goals\DeleteGoal;
 use App\Actions\Goals\UpdateGoal;
@@ -22,11 +23,17 @@ use Illuminate\View\View;
 
 final class GoalController extends Controller
 {
-    public function index(Request $request, GoalProgressService $progressService): View
-    {
+    public function index(
+        Request $request,
+        GoalProgressService $progressService,
+        ResolveCurrentAccount $resolveCurrentAccount,
+    ): View {
         Gate::authorize('viewAny', Goal::class);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $goals = $request->user()->goals()
+            ->where('account_id', $account->id)
             ->orderByRaw("CASE status WHEN 'active' THEN 1 WHEN 'paused' THEN 2 WHEN 'completed' THEN 3 ELSE 4 END")
             ->orderBy('deadline')
             ->paginate(10)

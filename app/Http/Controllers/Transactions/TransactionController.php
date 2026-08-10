@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Transactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Actions\Transactions\CreateTransaction;
 use App\Actions\Transactions\DeleteTransaction;
 use App\Actions\Transactions\ExportTransactionsCsv;
@@ -27,23 +28,31 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TransactionController extends Controller
 {
-    public function index(FilterTransactionsRequest $request, ListTransactions $listTransactions): View
-    {
+    public function index(
+        FilterTransactionsRequest $request,
+        ListTransactions $listTransactions,
+        ResolveCurrentAccount $resolveCurrentAccount,
+    ): View {
         $filters = TransactionFiltersData::fromArray($request->validated());
         $transactions = $listTransactions->handle($request->user(), $filters);
+        $account = $resolveCurrentAccount->handle($request->user());
 
         $categories = $request->user()->categories()
+            ->where('account_id', $account->id)
             ->orderBy('name')
             ->get();
 
         return view('transactions.index', compact('transactions', 'categories'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request, ResolveCurrentAccount $resolveCurrentAccount): View
     {
         Gate::authorize('create', Transaction::class);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $categories = $request->user()->categories()
+            ->where('account_id', $account->id)
             ->orderBy('name')
             ->get();
 
@@ -59,11 +68,17 @@ class TransactionController extends Controller
         return to_route('transactions.index')->with('status', 'Транзакция добавлена');
     }
 
-    public function edit(Request $request, Transaction $transaction): View
-    {
+    public function edit(
+        Request $request,
+        Transaction $transaction,
+        ResolveCurrentAccount $resolveCurrentAccount,
+    ): View {
         Gate::authorize('update', $transaction);
 
+        $account = $resolveCurrentAccount->handle($request->user());
+
         $categories = $request->user()->categories()
+            ->where('account_id', $account->id)
             ->orderBy('name')
             ->get();
 

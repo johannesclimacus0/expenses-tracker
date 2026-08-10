@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -27,6 +28,10 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $remember_token
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read Collection<int, AccountMember> $accountMemberships
+ * @property-read int|null $account_memberships_count
+ * @property-read Collection<int, Account> $accounts
+ * @property-read int|null $accounts_count
  * @property-read Collection<int, Budget> $budgets
  * @property-read int|null $budgets_count
  * @property-read Collection<int, Category> $categories
@@ -119,5 +124,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function telegramChat(): HasOne
     {
         return $this->hasOne(TelegramChat::class);
+    }
+
+    public function accountMemberships(): HasMany
+    {
+        return $this->hasMany(AccountMember::class);
+    }
+
+    public function accounts(): BelongsToMany
+    {
+        return $this->belongsToMany(Account::class, 'account_members')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

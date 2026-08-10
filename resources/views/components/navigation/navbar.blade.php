@@ -34,7 +34,8 @@
                 @endif
             </div>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <x-navigation.account-switcher :accounts="$accounts" :current-account="$currentAccount" />
             <a href="{{ route('dashboard') }}" @class([
                 'rounded-full px-3 py-2 text-xs transition',
                 'bg-slate-900 text-white' => request()->routeIs('dashboard'),
@@ -47,7 +48,10 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="rounded-full bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm transition hover:bg-slate-900 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100">
-                    Выйти
+                    <span class="hidden sm:inline">Выйти</span>
+                    <svg viewBox="0 0 20 20" fill="none" class="size-4 sm:hidden" aria-label="Выйти">
+                        <path d="M8 4H5.75A1.75 1.75 0 0 0 4 5.75v8.5C4 15.217 4.783 16 5.75 16H8M12.5 6.5 16 10l-3.5 3.5M16 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </button>
             </form>
         </div>

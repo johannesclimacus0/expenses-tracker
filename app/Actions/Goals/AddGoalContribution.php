@@ -11,10 +11,8 @@ use App\Models\GoalContribution;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
-final readonly class AddGoalContribution
+final class AddGoalContribution
 {
-    public function __construct(private SyncGoalStatus $syncStatus) {}
-
     public function handle(Goal $goal, GoalContributionData $data): GoalContribution
     {
         if ($data->type !== GoalContributionType::Deposit) {
@@ -29,8 +27,6 @@ final readonly class AddGoalContribution
                 'contributed_at' => $data->contributedAt,
                 'note' => $data->note,
             ]);
-
-            $this->syncStatus->handle($lockedGoal);
 
             return $contribution;
         });

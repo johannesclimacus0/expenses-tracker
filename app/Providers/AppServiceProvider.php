@@ -2,13 +2,18 @@
 
 namespace App\Providers;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
+use App\Models\GoalContribution;
+use App\Observers\GoalContributionObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -28,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        GoalContribution::observe(GoalContributionObserver::class);
+
         Password::defaults(function () {
             if ($this->app->isLocal()) {
                 return Password::min(8);
@@ -110,5 +117,23 @@ class AppServiceProvider extends ServiceProvider
         Date::use(CarbonImmutable::class);
 
         DB::prohibitDestructiveCommands(app()->isProduction());
+
+        View::composer('components.navigation.navbar', function (ViewContract $view): void {
+            $user = request()->user();
+
+            if ($user === null) {
+                $view->with([
+                    'accounts' => collect(),
+                    'currentAccount' => null,
+                ]);
+
+                return;
+            }
+
+            $view->with([
+                'accounts' => $user->accounts()->orderBy('name')->get(),
+                'currentAccount' => app(ResolveCurrentAccount::class)->handle($user),
+            ]);
+        });
     }
 }

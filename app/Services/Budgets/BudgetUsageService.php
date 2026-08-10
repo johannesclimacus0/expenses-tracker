@@ -2,19 +2,24 @@
 
 namespace App\Services\Budgets;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\DTOs\Budgets\BudgetUsageData;
 use App\Enums\TransactionType;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
-final class BudgetUsageService
+final readonly class BudgetUsageService
 {
+    public function __construct(private ResolveCurrentAccount $resolveCurrentAccount) {}
+
     public function forMonth(User $user, CarbonImmutable $month): Collection
     {
         $month = $month->startOfMonth();
+        $account = $this->resolveCurrentAccount->handle($user);
 
         $budgets = $user->budgets()
+            ->where('account_id', $account->id)
             ->with('category')
             ->whereDate('month', $month->toDateString())
             ->orderByRaw('category_id IS NULL DESC')
@@ -26,6 +31,7 @@ final class BudgetUsageService
         }
 
         $expenseQuery = $user->transactions()
+            ->where('account_id', $account->id)
             ->where('type', TransactionType::Expense->value)
             ->whereBetween('occurred_at', [
                 $month->startOfDay(),

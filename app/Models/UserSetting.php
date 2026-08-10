@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $user_id
+ * @property int|null $active_account_id
  * @property Currency $currency
  * @property DashboardPeriod $dashboard_period
  * @property int $transactions_per_page
@@ -19,11 +20,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $show_cents
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read Account|null $activeAccount
  * @property-read User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereActiveAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereBudgetWarningPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserSetting whereCurrency($value)
@@ -36,7 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @mixin \Eloquent
  */
-#[Fillable(['currency', 'dashboard_period', 'transactions_per_page', 'budget_warning_percent', 'show_cents'])]
+#[Fillable(['active_account_id', 'currency', 'dashboard_period', 'transactions_per_page', 'budget_warning_percent', 'show_cents'])]
 class UserSetting extends Model
 {
     protected function casts(): array
@@ -53,5 +56,10 @@ class UserSetting extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function activeAccount(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'active_account_id');
     }
 }

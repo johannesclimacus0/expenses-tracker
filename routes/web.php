@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Accounts\AccountController;
+use App\Http\Controllers\Accounts\AccountMemberController;
+use App\Http\Controllers\Accounts\CurrentAccountController;
 use App\Http\Controllers\Budgets\BudgetController;
 use App\Http\Controllers\Categories\CategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -12,6 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::patch('/accounts/current', [CurrentAccountController::class, 'update'])
+        ->name('accounts.current.update');
+    Route::resource('accounts', AccountController::class)
+        ->only(['index', 'store', 'edit', 'update', 'destroy']);
+    Route::scopeBindings()->group(function (): void {
+        Route::post('/accounts/{account}/members', [AccountMemberController::class, 'store'])
+            ->name('accounts.members.store');
+        Route::delete('/accounts/{account}/members/{member}', [AccountMemberController::class, 'destroy'])
+            ->name('accounts.members.destroy');
+    });
     Route::get('/settings', [SettingsController::class, 'index'])
         ->name('settings.index');
     Route::patch('/settings', [SettingsController::class, 'update'])

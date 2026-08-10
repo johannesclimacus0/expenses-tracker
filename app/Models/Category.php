@@ -18,10 +18,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $uuid
  * @property int $user_id
+ * @property int|null $account_id
  * @property string $name
  * @property TransactionType $type
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read Account|null $account
  * @property-read Collection<int, Budget> $budgets
  * @property-read int|null $budgets_count
  * @property-read Collection<int, RecurringTransaction> $recurringTransactions
@@ -34,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
@@ -44,7 +47,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @mixin Eloquent
  */
-#[Fillable(['name', 'type'])]
+#[Fillable(['account_id', 'name', 'type'])]
 class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
@@ -72,5 +75,10 @@ class Category extends Model
     public function recurringTransactions(): HasMany
     {
         return $this->hasMany(RecurringTransaction::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 }

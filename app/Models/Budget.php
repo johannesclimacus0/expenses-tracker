@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string $uuid
  * @property int $user_id
+ * @property int|null $account_id
  * @property int|null $category_id
  * @property numeric $amount
  * @property CarbonImmutable $month
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read Account|null $account
  * @property-read Category|null $category
  * @property-read User $user
  *
@@ -26,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget whereCreatedAt($value)
@@ -37,7 +40,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @mixin \Eloquent
  */
-#[Fillable(['category_id', 'amount', 'month'])]
+#[Fillable(['account_id', 'category_id', 'amount', 'month'])]
 class Budget extends Model
 {
     /** @use HasFactory<BudgetFactory> */
@@ -56,6 +59,11 @@ class Budget extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function isOverall(): bool

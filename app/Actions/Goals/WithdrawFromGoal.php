@@ -17,7 +17,6 @@ final readonly class WithdrawFromGoal
 {
     public function __construct(
         private GoalProgressService $progressService,
-        private SyncGoalStatus $syncStatus,
     ) {}
 
     public function handle(Goal $goal, GoalContributionData $data): GoalContribution
@@ -42,8 +41,6 @@ final readonly class WithdrawFromGoal
                 'contributed_at' => $data->contributedAt,
                 'note' => $data->note,
             ]);
-
-            $this->syncStatus->handle($lockedGoal);
 
             return $contribution;
         });

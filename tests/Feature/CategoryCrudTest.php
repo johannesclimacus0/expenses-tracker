@@ -150,6 +150,7 @@ class CategoryCrudTest extends TestCase
             'type' => TransactionType::Expense,
         ]);
         $user->transactions()->create([
+            'account_id' => $category->account_id,
             'category_id' => $category->id,
             'type' => TransactionType::Expense,
             'amount' => '100.00',
@@ -215,6 +216,7 @@ class CategoryCrudTest extends TestCase
             'type' => TransactionType::Expense,
         ]);
         $transaction = $user->transactions()->create([
+            'account_id' => $category->account_id,
             'category_id' => $category->id,
             'type' => TransactionType::Expense,
             'amount' => '125.50',
@@ -222,6 +224,7 @@ class CategoryCrudTest extends TestCase
             'occurred_at' => now(),
         ]);
         $budget = $user->budgets()->create([
+            'account_id' => $category->account_id,
             'category_id' => $category->id,
             'amount' => '5000.00',
             'month' => now()->startOfMonth(),

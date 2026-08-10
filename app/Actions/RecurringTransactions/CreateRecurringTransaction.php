@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\RecurringTransactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\DTOs\RecurringTransactions\RecurringTransactionData;
 use App\Models\RecurringTransaction;
 use App\Models\User;
@@ -12,11 +13,17 @@ use Carbon\CarbonImmutable;
 
 final readonly class CreateRecurringTransaction
 {
-    public function __construct(private RecurringScheduleService $schedule) {}
+    public function __construct(
+        private RecurringScheduleService $schedule,
+        private ResolveCurrentAccount $accounts,
+    ) {}
 
     public function handle(User $user, RecurringTransactionData $data): RecurringTransaction
     {
+        $account = $this->accounts->handle($user);
+
         return $user->recurringTransactions()->create([
+            'account_id' => $account->getKey(),
             'type' => $data->type,
             'amount' => $data->amount,
             'category_id' => $data->categoryId,

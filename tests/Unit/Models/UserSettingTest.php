@@ -38,6 +38,18 @@ class UserSettingTest extends TestCase
         $this->assertTrue($settings->user->is($user));
     }
 
+    public function test_settings_belong_to_active_account(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->firstOrFail();
+        $settings = $user->settings()->create([
+            'active_account_id' => $account->getKey(),
+        ]);
+
+        $this->assertInstanceOf(BelongsTo::class, $settings->activeAccount());
+        $this->assertTrue($settings->activeAccount->is($account));
+    }
+
     public function test_enum_and_scalar_attributes_are_cast(): void
     {
         $user = User::factory()->create();
