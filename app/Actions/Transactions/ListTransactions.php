@@ -14,8 +14,7 @@ final readonly class ListTransactions
     public function handle(User $user, TransactionFiltersData $filters): LengthAwarePaginator
     {
         $account = $this->resolveCurrentAccount->handle($user);
-        $query = $user->transactions()
-            ->where('account_id', $account->id)
+        $query = $account->transactions()
             ->with('category');
         if ($filters->type !== null) {
             $query->where('type', $filters->type->value);

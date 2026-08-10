@@ -4,7 +4,7 @@
 ])
 
 @if ($currentAccount !== null && $accounts->isNotEmpty())
-    <details class="group relative">
+    <details class="group relative" data-active-account-uuid="{{ $currentAccount->uuid }}">
         <summary class="flex max-w-44 cursor-pointer list-none items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs font-medium text-slate-700 transition hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 sm:max-w-52 [&::-webkit-details-marker]:hidden">
             <span class="min-w-0 flex-1 truncate">{{ $currentAccount->name }}</span>
             <svg viewBox="0 0 20 20" fill="none" class="size-4 shrink-0 text-slate-400 transition group-open:rotate-180" aria-hidden="true">
