@@ -18,8 +18,7 @@ final readonly class BudgetUsageService
         $month = $month->startOfMonth();
         $account = $this->resolveCurrentAccount->handle($user);
 
-        $budgets = $user->budgets()
-            ->where('account_id', $account->id)
+        $budgets = $account->budgets()
             ->with('category')
             ->whereDate('month', $month->toDateString())
             ->orderByRaw('category_id IS NULL DESC')
@@ -30,8 +29,7 @@ final readonly class BudgetUsageService
             return collect();
         }
 
-        $expenseQuery = $user->transactions()
-            ->where('account_id', $account->id)
+        $expenseQuery = $account->transactions()
             ->where('type', TransactionType::Expense->value)
             ->whereBetween('occurred_at', [
                 $month->startOfDay(),

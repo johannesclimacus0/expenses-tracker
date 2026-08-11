@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\AccountRole;
 use App\Models\Transaction;
 use App\Models\User;
 
@@ -19,7 +20,7 @@ class TransactionPolicy
 
     public function view(User $user, Transaction $transaction): bool
     {
-        return $this->owns($user, $transaction);
+        return $this->isAccountMember($user, $transaction);
     }
 
     public function update(User $user, Transaction $transaction): bool
@@ -29,11 +30,29 @@ class TransactionPolicy
 
     public function delete(User $user, Transaction $transaction): bool
     {
-        return $this->owns($user, $transaction);
+        return $this->owns($user, $transaction)
+            || $this->isAccountOwner($user, $transaction);
     }
 
     private function owns(User $user, Transaction $transaction): bool
     {
         return $transaction->user_id === $user->getKey();
+    }
+
+    private function isAccountMember(User $user, Transaction $transaction): bool
+    {
+        return $transaction->account_id !== null
+            && $user->accountMemberships()
+                ->where('account_id', $transaction->account_id)
+                ->exists();
+    }
+
+    private function isAccountOwner(User $user, Transaction $transaction): bool
+    {
+        return $transaction->account_id !== null
+            && $user->accountMemberships()
+                ->where('account_id', $transaction->account_id)
+                ->where('role', AccountRole::Owner->value)
+                ->exists();
     }
 }

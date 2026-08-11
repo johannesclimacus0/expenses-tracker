@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  * @property string $uuid
- * @property int $user_id
+ * @property int|null $user_id
  * @property int|null $account_id
  * @property int|null $category_id
  * @property TransactionType $type

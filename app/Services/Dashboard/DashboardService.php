@@ -19,7 +19,7 @@ final class DashboardService
     public function build(User $user, DashboardFilterData $filter): DashboardData
     {
         $account = $this->resolveCurrentAccount->handle($user);
-        $transactions = $user->transactions()->where('account_id', $account->id);
+        $transactions = $account->transactions();
 
         if ($filter->start === null) {
             $transactions->where('occurred_at', '<=', $filter->end);
@@ -37,8 +37,7 @@ final class DashboardService
 
         $balance = bcsub((string) $income, (string) $expense, 2);
 
-        $latestTransactions = $user->transactions()
-            ->where('account_id', $account->id)
+        $latestTransactions = $account->transactions()
             ->with('category')
             ->orderByDesc('occurred_at')
             ->limit(5)

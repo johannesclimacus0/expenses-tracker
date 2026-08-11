@@ -26,17 +26,13 @@ class CategoryController extends Controller
 
         $account = $resolveCurrentAccount->handle($request->user());
 
-        $expenseCategories = $request->user()
-            ->categories()
-            ->where('account_id', $account->id)
+        $expenseCategories = $account->categories()
             ->where('type', TransactionType::Expense->value)
             ->orderBy('name')
             ->simplePaginate(perPage: 10, pageName: 'expenses_page')
             ->withQueryString();
 
-        $incomeCategories = $request->user()
-            ->categories()
-            ->where('account_id', $account->id)
+        $incomeCategories = $account->categories()
             ->where('type', TransactionType::Income->value)
             ->orderBy('name')
             ->simplePaginate(perPage: 10, pageName: 'income_page')

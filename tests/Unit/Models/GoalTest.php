@@ -57,20 +57,27 @@ final class GoalTest extends TestCase
         $this->assertNotNull($contribution->uuid);
     }
 
-    public function test_deleting_user_or_goal_cascades_to_financial_goal_data(): void
+    public function test_deleting_goal_cascades_to_contributions(): void
     {
-        $user = User::factory()->create();
-        $goal = Goal::factory()->for($user)->create();
+        $goal = Goal::factory()->create();
         $contribution = GoalContribution::factory()->for($goal)->create();
 
         $goal->delete();
 
         $this->assertModelMissing($goal);
         $this->assertModelMissing($contribution);
+    }
 
-        $secondGoal = Goal::factory()->for($user)->create();
+    public function test_deleting_creator_preserves_account_goal_data(): void
+    {
+        $user = User::factory()->create();
+        $goal = Goal::factory()->for($user)->create();
+        $contribution = GoalContribution::factory()->for($goal)->create();
+
         $user->delete();
 
-        $this->assertModelMissing($secondGoal);
+        $this->assertModelExists($goal);
+        $this->assertModelExists($contribution);
+        $this->assertNull($goal->refresh()->user_id);
     }
 }

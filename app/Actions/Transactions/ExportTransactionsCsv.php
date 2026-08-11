@@ -17,8 +17,7 @@ final class ExportTransactionsCsv
     {
         $account = $this->resolveCurrentAccount->handle($user);
 
-        $transactions = $user->transactions()
-            ->where('account_id', $account->id)
+        $transactions = $account->transactions()
             ->with('category')
             ->orderBy('occurred_at')
             ->orderBy('id')

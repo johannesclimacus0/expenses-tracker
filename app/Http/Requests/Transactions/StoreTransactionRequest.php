@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Transactions;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Enums\TransactionType;
 use App\Models\Transaction;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,13 +17,15 @@ class StoreTransactionRequest extends FormRequest
 
     public function rules(): array
     {
+        $account = app(ResolveCurrentAccount::class)->handle($this->user());
+
         return [
             'type' => ['required', Rule::enum(TransactionType::class)],
             'amount' => 'required|numeric|decimal:0,2|min:0.01|max:9999999999.99',
             'category_id' => ['nullable', 'integer',
                 Rule::exists('categories', 'id')->where(
                     fn ($query) => $query
-                        ->where('user_id', $this->user()->getAuthIdentifier())
+                        ->where('account_id', $account->getKey())
                         ->where('type', $this->input('type')),
                 ),
             ],

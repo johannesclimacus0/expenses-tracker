@@ -6,8 +6,8 @@ namespace Database\Seeders;
 
 use App\Enums\RecurringPeriod;
 use App\Enums\TransactionType;
+use App\Models\Account;
 use App\Models\RecurringTransaction;
-use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
@@ -16,17 +16,20 @@ final class RecurringTransactionsSeeder extends Seeder
 {
     public function run(): void
     {
-        User::query()
-            ->with('categories')
-            ->eachById(function (User $user): void {
-                $categoriesByType = $user->categories->groupBy(
+        Account::query()
+            ->with(['members:id,account_id,user_id', 'categories'])
+            ->eachById(function (Account $account): void {
+                if ($account->members->isEmpty()) {
+                    return;
+                }
+
+                $categoriesByType = $account->categories->groupBy(
                     fn ($category) => $category->type->value,
                 );
 
                 RecurringTransaction::factory()
                     ->count(6)
-                    ->for($user)
-                    ->sequence(function (Sequence $sequence) use ($categoriesByType): array {
+                    ->sequence(function (Sequence $sequence) use ($account, $categoriesByType): array {
                         $type = fake()->randomElement(TransactionType::cases());
                         $period = fake()->randomElement(RecurringPeriod::cases());
                         $categories = $categoriesByType->get($type->value, collect());
@@ -41,6 +44,8 @@ final class RecurringTransactionsSeeder extends Seeder
                             : $this->pastOccurrence($period);
 
                         return [
+                            'account_id' => $account->getKey(),
+                            'user_id' => $account->members->random()->user_id,
                             'type' => $type,
                             'category_id' => $category?->id,
                             'period' => $period,

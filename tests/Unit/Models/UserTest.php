@@ -62,7 +62,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->hasVerifiedEmail());
     }
 
-    public function test_owned_models_are_deleted_with_user(): void
+    public function test_deleting_user_preserves_account_financial_data_and_deletes_settings(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->for($user)->create();
@@ -76,9 +76,12 @@ class UserTest extends TestCase
 
         $user->delete();
 
-        $this->assertModelMissing($category);
-        $this->assertModelMissing($transaction);
-        $this->assertModelMissing($budget);
+        $this->assertModelExists($category);
+        $this->assertModelExists($transaction);
+        $this->assertModelExists($budget);
+        $this->assertNull($category->refresh()->user_id);
+        $this->assertNull($transaction->refresh()->user_id);
+        $this->assertNull($budget->refresh()->user_id);
         $this->assertModelMissing($settings);
     }
 }

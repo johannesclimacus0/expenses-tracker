@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  * @property string $uuid
- * @property int $user_id
+ * @property int|null $user_id
  * @property int|null $account_id
  * @property string $name
  * @property TransactionType $type
@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $recurring_transactions_count
  * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
- * @property-read User $user
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()

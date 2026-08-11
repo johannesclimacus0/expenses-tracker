@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Categories;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Enums\TransactionType;
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,10 +17,12 @@ class StoreCategoryRequest extends FormRequest
 
     public function rules(): array
     {
+        $account = app(ResolveCurrentAccount::class)->handle($this->user());
+
         return [
             'name' => ['required', 'string', 'max:50',
                 Rule::unique('categories', 'name')
-                    ->where('user_id', $this->user()->id)
+                    ->where('account_id', $account->getKey())
                     ->where('type', $this->input('type')),
             ],
             'type' => ['required', Rule::enum(TransactionType::class)],

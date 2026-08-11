@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property string $uuid
- * @property int $user_id
+ * @property int|null $user_id
  * @property int|null $account_id
  * @property int|null $category_id
  * @property TransactionType $type
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Account|null $account
  * @property-read Category|null $category
  * @property-read RecurringTransaction|null $recurringTransaction
- * @property-read User $user
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\TransactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaction newModelQuery()

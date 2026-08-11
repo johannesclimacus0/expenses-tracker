@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Budgets;
 
+use App\Actions\Accounts\ResolveCurrentAccount;
 use App\Enums\TransactionType;
 use App\Models\Budget;
 use Carbon\CarbonImmutable;
@@ -18,13 +19,15 @@ class StoreBudgetRequest extends FormRequest
 
     public function rules(): array
     {
+        $account = app(ResolveCurrentAccount::class)->handle($this->user());
+
         return [
             'amount' => 'required|numeric|decimal:0,2|min:0.01|max:9999999999.99',
             'month' => 'required|date_format:Y-m',
             'category_id' => ['nullable', 'integer',
                 Rule::exists('categories', 'id')->where(
                     fn ($query) => $query
-                        ->where('user_id', $this->user()->getAuthIdentifier())
+                        ->where('account_id', $account->getKey())
                         ->where('type', TransactionType::Expense->value),
                 ),
             ],
@@ -46,7 +49,8 @@ class StoreBudgetRequest extends FormRequest
 
                 $month = CarbonImmutable::createFromFormat('Y-m', $this->input('month'))->startOfMonth();
 
-                $query = $this->user()->budgets()->whereDate('month', $month->toDateString());
+                $account = app(ResolveCurrentAccount::class)->handle($this->user());
+                $query = $account->budgets()->whereDate('month', $month->toDateString());
 
                 if ($this->filled('category_id')) {
                     $query->where('category_id', $this->integer('category_id'));

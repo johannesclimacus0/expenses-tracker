@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property string $uuid
- * @property int $user_id
+ * @property int|null $user_id
  * @property int|null $account_id
  * @property int|null $category_id
  * @property numeric $amount
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $updated_at
  * @property-read Account|null $account
  * @property-read Category|null $category
- * @property-read User $user
+ * @property-read User|null $user
  *
  * @method static \Database\Factories\BudgetFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Budget newModelQuery()

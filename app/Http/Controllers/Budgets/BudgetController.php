@@ -87,8 +87,7 @@ class BudgetController extends Controller
     {
         $account = $resolveCurrentAccount->handle($request->user());
 
-        return $request->user()->categories()
-            ->where('account_id', $account->id)
+        return $account->categories()
             ->where('type', TransactionType::Expense->value)
             ->orderBy('name')
             ->get();

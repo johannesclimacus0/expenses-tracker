@@ -6,6 +6,8 @@ namespace Tests\Feature\Broadcasting;
 
 use App\Enums\TransactionType;
 use App\Events\TransactionCreated;
+use App\Events\TransactionDeleted;
+use App\Events\TransactionUpdated;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -66,6 +68,78 @@ final class TransactionBroadcastingTest extends TestCase
             'amount' => '1250.50',
             'description' => 'Продукты',
             'occurred_at' => $transaction->occurred_at->toIso8601String(),
+        ], $event->broadcastWith());
+    }
+
+    public function test_transaction_updated_broadcasts_on_private_account_channel(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->sole();
+        $transaction = Transaction::factory()->for($user)->create([
+            'account_id' => $account->id,
+        ]);
+
+        $event = new TransactionUpdated($transaction, $account->uuid);
+        $channels = $event->broadcastOn();
+
+        $this->assertCount(1, $channels);
+        $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
+        $this->assertSame('private-accounts.' . $account->uuid, $channels[0]->name);
+        $this->assertSame('transaction.updated', $event->broadcastAs());
+    }
+
+    public function test_transaction_updated_contains_safe_payload(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->sole();
+        $transaction = Transaction::factory()->for($user)->create([
+            'account_id' => $account->id,
+            'type' => TransactionType::Income,
+            'amount' => '8750.25',
+            'description' => 'Updated income',
+            'occurred_at' => '2026-08-02 09:15:00',
+        ]);
+
+        $event = new TransactionUpdated($transaction, $account->uuid);
+
+        $this->assertSame([
+            'uuid' => $transaction->uuid,
+            'type' => TransactionType::Income->value,
+            'amount' => '8750.25',
+            'description' => 'Updated income',
+            'occurred_at' => $transaction->occurred_at->toIso8601String(),
+        ], $event->broadcastWith());
+    }
+
+    public function test_transaction_deleted_broadcasts_on_private_account_channel(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->sole();
+        $transaction = Transaction::factory()->for($user)->create([
+            'account_id' => $account->id,
+        ]);
+
+        $event = new TransactionDeleted($transaction->uuid, $account->uuid);
+        $channels = $event->broadcastOn();
+
+        $this->assertCount(1, $channels);
+        $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
+        $this->assertSame('private-accounts.' . $account->uuid, $channels[0]->name);
+        $this->assertSame('transaction.deleted', $event->broadcastAs());
+    }
+
+    public function test_transaction_deleted_contains_only_transaction_uuid(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->sole();
+        $transaction = Transaction::factory()->for($user)->create([
+            'account_id' => $account->id,
+        ]);
+
+        $event = new TransactionDeleted($transaction->uuid, $account->uuid);
+
+        $this->assertSame([
+            'uuid' => $transaction->uuid,
         ], $event->broadcastWith());
     }
 

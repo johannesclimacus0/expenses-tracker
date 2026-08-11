@@ -37,8 +37,7 @@ class TransactionController extends Controller
         $transactions = $listTransactions->handle($request->user(), $filters);
         $account = $resolveCurrentAccount->handle($request->user());
 
-        $categories = $request->user()->categories()
-            ->where('account_id', $account->id)
+        $categories = $account->categories()
             ->orderBy('name')
             ->get();
 
@@ -51,8 +50,7 @@ class TransactionController extends Controller
 
         $account = $resolveCurrentAccount->handle($request->user());
 
-        $categories = $request->user()->categories()
-            ->where('account_id', $account->id)
+        $categories = $account->categories()
             ->orderBy('name')
             ->get();
 
@@ -77,8 +75,7 @@ class TransactionController extends Controller
 
         $account = $resolveCurrentAccount->handle($request->user());
 
-        $categories = $request->user()->categories()
-            ->where('account_id', $account->id)
+        $categories = $account->categories()
             ->orderBy('name')
             ->get();
 

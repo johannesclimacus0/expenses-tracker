@@ -9,6 +9,7 @@ use App\Models\AccountMember;
 use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Goal;
+use App\Models\GoalContribution;
 use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use App\Models\User;
@@ -191,5 +192,32 @@ class AccountTest extends TestCase
                 'user_id' => $model->user_id,
             ]);
         }
+    }
+
+    public function test_deleting_account_cascades_to_financial_data(): void
+    {
+        $user = User::factory()->create();
+        $account = $user->accounts()->sole();
+        $category = Category::factory()->for($user)->for($account)->create();
+        $transaction = Transaction::factory()->for($user)->for($account)->create([
+            'category_id' => $category->id,
+        ]);
+        $budget = Budget::factory()->for($user)->for($account)->create([
+            'category_id' => $category->id,
+        ]);
+        $recurringTransaction = RecurringTransaction::factory()->for($user)->for($account)->create([
+            'category_id' => $category->id,
+        ]);
+        $goal = Goal::factory()->for($user)->for($account)->create();
+        $contribution = GoalContribution::factory()->for($goal)->create();
+
+        $account->delete();
+
+        $this->assertModelMissing($category);
+        $this->assertModelMissing($transaction);
+        $this->assertModelMissing($budget);
+        $this->assertModelMissing($recurringTransaction);
+        $this->assertModelMissing($goal);
+        $this->assertModelMissing($contribution);
     }
 }

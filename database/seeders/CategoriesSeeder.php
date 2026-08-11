@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CategoriesSeeder extends Seeder
@@ -13,10 +13,20 @@ class CategoriesSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+        Account::query()
+            ->with('members:id,account_id,user_id')
+            ->eachById(function (Account $account): void {
+                if ($account->members->isEmpty()) {
+                    return;
+                }
 
-        foreach ($users as $user) {
-            Category::factory()->count(rand(25, 50))->for($user)->create();
-        }
+                Category::factory()
+                    ->count(fake()->numberBetween(25, 50))
+                    ->sequence(fn (): array => [
+                        'account_id' => $account->getKey(),
+                        'user_id' => $account->members->random()->user_id,
+                    ])
+                    ->create();
+            });
     }
 }
