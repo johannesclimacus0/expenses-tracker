@@ -90,4 +90,6 @@ cp .env.example .env
 * Rate Limiter
 * Laravel Schedule
 * unit- и feature-тестирование
+* Laravel Reverb
+* Telegraph
 
